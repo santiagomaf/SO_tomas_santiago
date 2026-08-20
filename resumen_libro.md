@@ -125,5 +125,16 @@ el sistema operativo necesita una esrtructura de datos para llevar el registro d
 - Process List: registro de todos los procesos en el sistema y la informacion sobre la cual esta corriendo
 - PCB: estructura individual en C que almacena toda la informacion de un proceso individual.
 
+## system calls
+### Fork()
 
+se usa ára crear un proceso nuevo, el proceso eso si es una copia del proceso padre, el tema es que el valor de el proceso hijo retorna algo distinto al proceso padre, el hijo retorna 0 y el padre el PID del hijo
+
+### Wait()
+
+el proceso padre necesita, a veces, necesita esperar que el proceso hijo termine para poder continuar, para eso usamos wait(), hace que un proceso se bloquee hasta que otro proceso termina 
+
+### Exec()
+
+se usa para que un proceso ejecute un programa distinto al que lo creo, es decir transforma el proceso actual en otro
 

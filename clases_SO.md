@@ -120,3 +120,92 @@ hay threads en espacio de usuario y de kernel, habia que restringir la cantidad 
 - muchos a uno: muchos user a uno kernel un thread accede a la vez al kernel
 - uno a uno: mejor concurrencia que muchos a uno, permite paralelismo mayor costo
 - mucho a mucho: se puede hacer paralelismo y ejecutar y ver que thread toma que cosa
+
+# Clase 3
+Revision de codigo de los Threads
+
+### Create
+al thread se le pasa un puntero a una funcion para que retorne y que para esa funcion tambien reciba los argumentos es una funcion void
+
+### Join
+recupera el output de un thread hijo por ejemplo, es el simil a un wait de un thread, hay concurrencia en el ejemplo de t0.c, pero basicamente lo que hacemos es crear dos threads que le pasamos una funcion main y la ejecutan.
+
+cuando dos threads cambian una variable global puede tener un error, eso depende del sheduler y las interrupciones, si se dejan tranquilas no deberia pasar nada.
+
+### Algoritmos de planificacion
+
+permite el uso justo de recursos y que todos los procesos ejecuten. hay procesos que requieren mucho computo y otros que no tanto, los computadores especificamente la CPU tiene rafagas hasta que se interrumpe por una I/O.
+
+un planificador toma una decison cuando pasa de:
+- runnin a waiting (cooperativo)
+- running a ready
+- waiting a ready
+- terminacion (cooperativo)
+
+cuando esta el 1 y el 4 el planificador es cooperativo cuando es el segundo caso se dice que es expropiativa. En la planificacion no expropiativa una ve que la CPU toma un proceso, se mantiene hasta que la sea liberada por terminacion o por que cambia a waiting. basicamente si lo dejamos en un while infinito nunca cambia de running a waiting por lo que la CPU la tiene tomada, ese es el problema de la planificación cooperativa. Si el planificador depende de interrupciones por ejemplo un watchdog quiere decir que la planificacion es expropiativa, es más robusta esta planificacion.
+
+la expropiativa lo que si necesita es que los procesos concurrentes con operaciones de I/O sobre informacion compartida debes sincronizarte para mantener la informacion consistente sino pasa que hay fallos como lo vimos en el ejemplo de t1.c cuando se pone un argumento muy grande.
+
+thoughput quieres maximizar la cantidad de operaciones en cantidad de tiempo, minimizar el tiempo de completitud, minimizar el tiempo de espera cuando hay interrupciones por ejemplo, minimizar el tiempo de respuesta entre dispositivos o usuario. El criterio de justicia compartir la CPU de manera justa entre procesos.
+
+
+### Algoritmos de planificación
+
+- First-Come First-Served: Es una cola fifo (first in first out)el primero que llega es el primero que se ejecuta, los tiempo de espera son largo generalmente, se produce el efecto convoy que es basicamente que procesos cortos pueden quedar atascados por un procesos largo, es ineficiente el uso de recursos. El desempeño queda totalmente dependiente de el orden de llegada.
+
+- Round Robin: es expropiativa, tiene un timer (time slice), cuando se cumple el time slice el planificador ve que otro proceso toma por la misma cantidad de time-slice, si el procesos termina antes del time.slice simplemente sigue corriendo otro proceso. es justo para todos los procesos, el gran problema es que se demorn en completar lso distintos procesos.
+
+- SJF(Shortest job First): maximiza el thoughput, se necesita saber cuanta rafaga de cpu va a necesitar un proceso, el objetivo es terminar mas pronto los procesos cortos 
+
+- SRTF: funciona bien cuando los programas tiene comportamientos predecibles 
+
+### Planificacion por prioridad
+
+se le asigna una prioridad de cada proceso y la CPU se le asigna elproceso con mayor prioridad, por ejemplo el SJF, el problema pueden quedar postergados indefinidamente y no se ejecutan, esto se puede corregir con una variable de envejecimiento.
+
+### Planificacion Multinivel
+
+se tienen varias colas de procesos (ready queue) separadas para cada categorias 
+- system 
+- interactive 
+- interactive editing
+- batch
+- student
+
+### Multi level Feedback Queue
+
+busca optimizar el tiempo en completar el proceso y busca minimizar el tiempo de respuesta, el SO tampoco sabe a priori cuanto puede tomar en ejecutar, pero puede aprender sobre el comportamiento de los procesos a decidir como ajustar la planificacion.
+
+- regla 1: si la proridad del proceso A es mayor que B, ejecuta A
+- regla 2: si la proridad de A y B son iguales, ejecutan en Round 
+
+- regla 3: cuando un proceso llega al sistema se pone en la de mas alta prioridad
+
+- regla 4a: si un proceso ocupa todo el quantum de tiempo su prioridad es reducida
+
+- regla 4b: si no ocupa todo el quantum mantiene la prioridad
+
+
+
+cuando hay muchos procesos interactivos se bloquea ante de que termine el quantum y los procesos de larga ejecucion quedan abajo y mueren, y el vulnerable porque alguien puede mantener la alta prioridad para su proceso 
+
+- regla 5 (priority boost): despues de un tiempo S mueve todos los trabajos a la mayor prioridad, osea se mitiga el problema de la inanicion
+
+la tolerancia a la trampa, el procesos cuando suma un quantum completo se le baja la prioridad, al final ahi se mitiga el tema de hackeo, lleva registro de cuanto quantum a ocupado de CPU totoal  
+
+- regla 4: "Una vez que un proceso consume su cuota total de tiempo asignada en un nivel — sin importar cuántas veces haya soltado la CPU voluntariamente antes de completarla — se le baja la prioridad."
+
+### Comunicacion entre procesos (IPC)
+
+![IPC](imagenes/IPC.png)
+
+hay apis para poder hacer el paso de mensajes en procesos, uno de estos es el pipe que es una tuberia digital que es un canal de comunicacion unidirecional, que es un array que un proceso escribe y el otro solo lee, se tiene identificadores de que lado se puede escribir y por donde se puede leer el pipe
+
+named pipes que son pipes con nombres que quedan en el directorio temporal, solo se le pasa la ruta a los procesos 
+
+Los unix domain socket son bidireccional, se puede usar como un continuo consumo de bytes o usa paquetes discretos de datos 
+
+
+
+
+
