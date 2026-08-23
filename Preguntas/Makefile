@@ -4,7 +4,7 @@
 #      make all                -> compila todas las carpetas
 #      make clean              -> limpia los binarios de todas las carpetas
 
-SUBDIRS = fork-pipe-exec ejercicio-guiado padovan-threads
+SUBDIRS = fork-pipe-exec ejercicio-guiado padovan-threads primos-stats
 
 .PHONY: all clean $(SUBDIRS) $(addprefix run-,$(SUBDIRS))
 
