@@ -2,7 +2,7 @@
 
 Un sistema operativo es una pieza de software que hace facil usar el sistema, y lo logra mediante la virtualización, el cual toma recursos fisicos y lo transforma en una version mas general, el sistema operativo ademas tiene interfaces (API's) que son system calls para que los programas puedan pedirle cosas al sistema 
 
-## Virtualizing the CPU
+## Virtualizing the CPU cap 2
 
 En la virtualizacion de la cpu crea la ilusion de que hay mas de lo que en verdad hay, por ejemplo en la funcion de cpu.c llama repetida la función spin() y llama a una cadena de texto, un ejemplo es si llamamos a ./cpu "A" va a llamar repetidamente "A", en cambio si llamamos ./cpu "A" & ./cpu "B" va a llamar intercalado A y B
 
@@ -98,7 +98,7 @@ entonces el SO es un dispositivo que administra recursos computacionales
 - simplifica el desarrollo 
 - mecanimos para contener tolerar y recuperar fallas de aplicaciones y datos
 
-## Procesos
+## Procesos cap 4-5
 
 las intrucciones que un proceso lee o escribe residen en la memoria, los registros son que las instrucciones leen o modifican estos, hay especificos para cada tarea, el Program counter (que instruccion se esta ejecutando), stack counter (administra la pila).
 
@@ -137,4 +137,25 @@ el proceso padre necesita, a veces, necesita esperar que el proceso hijo termine
 ### Exec()
 
 se usa para que un proceso ejecute un programa distinto al que lo creo, es decir transforma el proceso actual en otro
+
+
+## scheduling cap 7
+
+el turnaround time, es el tiempo en que el trabajo termina, la justicia es otra metrica importante en este contexto 
+
+### algoritmos de scheduling
+
+- FIFO: se ejecutan en el orden exacto que llegan al sistema, el problema principal es el efecto convoy que es cuando un proceso requiere mucho tiempo para que termine y los demas procesos no requieren tanto tiempo estos de igual manera quedan atrapados hasta que termine el proceso grande. basicamente se monopoliza la CPU.
+![FIFO](imagenes/FIFO.png)
+- SFJ (shortest job first): lo que hace es que la cola le da prioridad a los procesos que se ejecutan más rápido, esto en teoria mitiga el convoy effect, pero que pasa si un proceso corto llega a la fila justo despues que el procesos largo este running, sigue produciendose el mismo efecto.
+![SFJ](imagenes/SFJ.png)
+- STFC(shortest time to complete first): el planificador compara el tiempo de ejecución de los procesos, incluido el de running y se ejecuta el que tenga menos, esto mitiga el problema del anterior.
+
+- Round Robin: este algoritmo fue diseñado para que mejore el response time, lo que hace es que se define un quantum o slice de tiempo y se ejecuta el programa hasta que se acabe el quantum asi mejora la justicia y el response time, pero empeora el turnaround time. Hay que tener cuidado con el quantum time que elijamos, si se elige un quantum muy grande empeora el response time, en caso contrario incrementa
+![RR](imagenes/Round_Robin.png)
+
+
+
+
+
 
