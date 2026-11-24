@@ -97,15 +97,17 @@ int main(int argc, char **argv) {
   TArgs args_2 = { 2, values, (VALUE_ARRAY_SIZE/sizeof(int)),
                   poutarray_2, (VALUE_ARRAY_SIZE/sizeof(int)) >> 1 };
 
-    pthread_create(&t1, NULL, thread_func, &args_1);
-    pthread_create(&t2, NULL, thread_func, &args_2);
+  /* TODO (5): completar creación de threads t1 y t2 */
+  pthread_create(&t1, NULL, thread_func, &args_1);
+  pthread_create(&t2, NULL, thread_func, &args_2);
+
+  // Creación de los threads
 
   printf("[child %d] Threads launched.\n", getpid());
 
-    pthread_join(t1, NULL);
-    pthread_join(t2, NULL);
-
-    
+  /* TODO (6): Esperar a que threads t1 y t2 terminen */
+  pthread_join(t1, NULL);
+  pthread_join(t2, NULL);
 
   int sum_t1 = avg_array(poutarray_1, (VALUE_ARRAY_SIZE/sizeof(int)) >> 1);
   int sum_t2 = avg_array(poutarray_2, (VALUE_ARRAY_SIZE/sizeof(int)) >> 1);

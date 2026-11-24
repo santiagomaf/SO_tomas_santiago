@@ -57,10 +57,24 @@ int main(int argc, char *argv[]) {
     pthread_t t1, t2;
 
     // TODO 1: Crear thread que ejecute fill_primes
+    pthread_create(&t1, NULL, fill_primes,&params);
     // TODO 2: Esperar a que termine
+    pthread_join(t1,NULL);
     // TODO 3: Crear thread que ejecute compute_stats
+    pthread_create(&t2,NULL,compute_stats,&params);
     // TODO 4: Esperar a que termine
+    pthread_join(t2,NULL);
     // TODO 5: Crear proceso hijo con fork
+    pid_t pid = fork();
+
+    if (pid == 0){
+        printf("%d, %d, %d\n", params.min, params.max, params.mean);
+    }
+    else{
+        waitpid(pid,NULL,0);
+        free(arr);
+
+    }
     // El hijo debe imprimir min, max y mean
     // TODO 6: Padre espera a hijo y libera memoria
 

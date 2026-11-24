@@ -1,13 +1,10 @@
 #include <unistd.h>
 #include <sys/types.h>
-#include <sys/wait.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include "constants.h"
 
 int main(int argc, char **argv) {
-    (void)argc;
-    (void)argv;
     int pd[2];
     pid_t pid;
     enum { READ_END = 0, WRITE_END = 1 };
@@ -24,6 +21,7 @@ int main(int argc, char **argv) {
     printf("[parent %d] read end: '%s' write end: '%s'\n",
            getpid(), sr, sw);
 
+    /* TODO (1): Lanzar proceso hijo */
     pid = fork();
 
     if (pid > 0) {
@@ -50,13 +48,18 @@ int main(int argc, char **argv) {
         printf("[parent %d] Waiting for child to end", getpid());
         fclose(fp);
 
-        wait(&pid);
+        waitpid(pid, NULL, 0);
 
         close(pd[WRITE_END]);
     }
     else {
-        char* args[] = {sr,sw, NULL};
-        execv("./child", args);
+
+        char *argv[3] = {sr,sw,NULL};
+        execve("./child", argv, NULL);
+        // TODO (4): Completar el código para lanzar el proceso hijo.
+        // El programa child del proceso hijo debe recibir como argumentos
+        // los descriptores de los extremos de lectura y escritura del pipe,
+        // contenidos en los strings sr y sw definidos arriba.
     }
 
     return EXIT_SUCCESS;
